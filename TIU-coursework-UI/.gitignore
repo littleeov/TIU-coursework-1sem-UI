@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Temporary folders
+tmp/
+temp/
+
+# Production build folder (если вы заливаете только исходники)
+dist/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Local development settings
+*.local
+
+# Mock server temp files (если есть)
+mock-servers/*/db.json
+# Если хочешь, чтобы `db.json` не игнорировался, удали эту строку
+
+# Vite specific
+.vite/
+
+# npm specific
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
