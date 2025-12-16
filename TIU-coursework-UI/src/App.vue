@@ -44,22 +44,6 @@
     <!-- Main Content -->
     <main style="flex: 1;">
       <div class="info-block">
-        <div class="hidden-buttons">
-          <button 
-            class="hidden-btn save-btn" 
-            :class="{ show: selectedFile }"
-            @click="openSaveForm"
-          >
-            {{ mode === 'file' ? 'Сохранить' : 'Экспортировать' }}
-          </button>
-          <button 
-            class="hidden-btn delete-btn" 
-            :class="{ show: selectedFile }"
-            @click="openDeleteForm"
-          >
-            Удалить
-          </button>
-        </div>
 
         <div v-if="searchResults.length > 0" class="file-list">
           <h3>{{ mode === 'file' ? 'Найденные файлы:' : 'Найденные таблицы:' }}</h3>
@@ -67,7 +51,7 @@
             v-for="(item, index) in searchResults" 
             :key="index" 
             class="file-item" 
-            :class="{ selected: selectedFile && selectedFile.id === item.id }"
+            :class="{ selected: currentItem && currentItem.id === item.id }"
             @click="selectItem(item)"
           >
             <div class="file-info">
@@ -247,7 +231,7 @@ import axios from 'axios';
 const mode = ref('file');
 const lastSearchResult = ref(null);
 const searchResults = ref([]);
-const selectedFile = ref(null);
+const currentItem = ref(null);
 
 // Modal flags
 const showUploadForm = ref(false);
@@ -379,7 +363,7 @@ const switchMode = (newMode) => {
     searchQuery.value = '';
     lastSearchResult.value = null;
     searchResults.value = [];
-    selectedFile.value = null;
+    currentItem.value = null;
   }
 };
 
@@ -397,13 +381,13 @@ const openSearchForm = () => {
 };
 
 const openSaveForm = () => {
-  if (selectedFile.value) {
+  if (currentItem.value) {
     showSaveForm.value = true;
   }
 };
 
 const openDeleteForm = () => {
-  if (selectedFile.value) {
+  if (currentItem.value) {
     showDeleteForm.value = true;
   }
 };
@@ -592,31 +576,31 @@ const performSearch = async () => {
 };
 
 const selectItem = (item) => {
-  selectedFile.value = item;
+  currentItem.value = item;
 };
 
 const selectAndSave = (item) => {
-  selectedFile.value = item;
+  currentItem.value = item;
   openSaveForm();
 };
 
 const selectAndDelete = (item) => {
-  selectedFile.value = item;
+  currentItem.value = item;
   openDeleteForm();
 };
 
 const confirmSave = async () => {
   try {
     if (mode.value === 'file') {
-      await ApiService.saveFile(selectedFile.value.id);
+      await ApiService.saveFile(currentItem.value.id);
       saveSuccess.value = true;
       showNotification('Файл успешно сохранен', 'success');
     } else {
-      const response = await ApiService.exportTable(selectedFile.value.id);
+      const response = await ApiService.exportTable(currentItem.value.id);
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', selectedFile.value.name + '.xlsx');
+      link.setAttribute('download', currentItem.value.name + '.xlsx');
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -631,16 +615,16 @@ const confirmSave = async () => {
 };
 
 const confirmDelete = async () => {
-  if (!selectedFile.value) return;
+  if (!currentItem.value) return;
 
   try {
-    await ApiService.delete(selectedFile.value.id, mode.value === 'table');
+    await ApiService.delete(currentItem.value.id, mode.value === 'table');
 
-    searchResults.value = searchResults.value.filter(f => f.id !== selectedFile.value.id);
+    searchResults.value = searchResults.value.filter(f => f.id !== currentItem.value.id);
     if (searchResults.value.length === 0) {
       lastSearchResult.value = null;
     }
-    selectedFile.value = null;
+    currentItem.value = null;
 
     deleteSuccess.value = true;
     showNotification(
