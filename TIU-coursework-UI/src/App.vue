@@ -670,7 +670,6 @@ const showNotification = (message, type) => {
 </script>
 
 <style>
-/* Твой CSS остаётся без изменений */
 * {
   margin: 0;
   padding: 0;

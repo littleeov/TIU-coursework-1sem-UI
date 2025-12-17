@@ -1,8 +1,6 @@
 // src/services/ApiService.js
 import axios from 'axios';
 
-// Вместо process.env.VUE_APP_... используем window для доступа к переменным
-// Это работает, если ты используешь Vite
 const SERVICE_URLS = {
   FILE_STORAGE_SERVICE: import.meta.env.VUE_APP_FILE_STORAGE_SERVICE_URL || 'http://localhost:3000',
   TABLE_STORAGE_SERVICE: import.meta.env.VUE_APP_TABLE_STORAGE_SERVICE_URL || 'http://localhost:3001',
